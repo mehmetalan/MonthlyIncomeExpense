@@ -17,5 +17,14 @@ namespace DataAccessLayer
         }
 
         public DbSet<IncomeExpense> IncomeExpenses { get; set; }
+        public DbSet<InExType> InExTypes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<InExType>().HasData(
+                new InExType { InExTypeID = 1, InExName = "Gelir" },
+                new InExType { InExTypeID = 2, InExName = "Gider" }
+                );
+        }
     }
 }

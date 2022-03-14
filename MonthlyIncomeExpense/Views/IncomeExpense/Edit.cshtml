@@ -33,6 +33,11 @@
                 <span asp-validation-for="ImageBase64" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="InExTypeID" class="control-label"></label>
+                <select asp-for="InExTypeID" class="form-control" asp-items="ViewBag.InExTypeID"></select>
+                <span asp-validation-for="InExTypeID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -44,5 +49,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

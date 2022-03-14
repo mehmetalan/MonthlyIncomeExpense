@@ -18,12 +18,17 @@ namespace DataAccessLayer.Repositories
 
         public List<IncomeExpense> GetList()
         {
-            return _ctx.IncomeExpenses.ToList();
+            return _ctx.IncomeExpenses.Include(x => x.InExType).ToList();
+        }
+
+        public List<IncomeExpense> GetIncomes()
+        {
+            return _ctx.IncomeExpenses.Include(x => x.InExType).Where(x => x.InExType.InExName=="Gelir").ToList();
         }
 
         public IncomeExpense GetIncomeExpenseById(int id)
         {
-            return _ctx.IncomeExpenses.FirstOrDefault(x => x.Id == id);
+            return _ctx.IncomeExpenses.Include(x => x.InExType).FirstOrDefault(x => x.Id == id);
         }
 
         public IncomeExpense AddOrUpdateIncomeExpense(IncomeExpense ie)

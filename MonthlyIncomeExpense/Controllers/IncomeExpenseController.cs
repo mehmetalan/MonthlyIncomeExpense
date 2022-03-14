@@ -1,7 +1,9 @@
-﻿using DataAccessLayer.Entities;
+﻿using DataAccessLayer;
+using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MonthlyIncomeExpense.Models;
 using System.Collections.Generic;
 
@@ -10,9 +12,11 @@ namespace MonthlyIncomeExpense.Controllers
     public class IncomeExpenseController : Controller
     {
         IncomeExpenseRepository _repository;
-        public IncomeExpenseController(IncomeExpenseRepository repository)
+        MonthlyIncomeExpenseDbContext _ctx;
+        public IncomeExpenseController(IncomeExpenseRepository repository, MonthlyIncomeExpenseDbContext ctx)
         {
             _repository = repository;
+            _ctx = ctx;
         }
         // GET: IncomeExpenseController
         public ActionResult Index()
@@ -33,6 +37,11 @@ namespace MonthlyIncomeExpense.Controllers
             return View();
         }
 
+        public ActionResult GetIncomes()
+        {
+            return View(_repository.GetIncomes());
+        }
+
         // POST: IncomeExpenseController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -45,7 +54,8 @@ namespace MonthlyIncomeExpense.Controllers
         // GET: IncomeExpenseController/Edit/5
         public ActionResult Edit(int? id)
         {
-            if(!id.HasValue || id.Value <= 0)
+            ViewData["InExTypeID"] = new SelectList(_ctx.InExTypes, "InExTypeID", "InExName");
+            if (!id.HasValue || id.Value <= 0)
             {
                 return View(new IncomeExpense());
             }
@@ -59,6 +69,7 @@ namespace MonthlyIncomeExpense.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(IncomeExpense ie)
         {
+            ViewData["InExTypeID"] = new SelectList(_ctx.InExTypes, "InExTypeID", "InExName");
             _repository.AddOrUpdateIncomeExpense(ie);
             return RedirectToAction("Index");
         }

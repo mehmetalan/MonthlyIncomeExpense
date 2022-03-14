@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MonthlyIncomeExpenseDbContext))]
-    [Migration("20220314135753_initial")]
-    partial class initial
+    [Migration("20220314142522_a")]
+    partial class a
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,6 +19,33 @@ namespace DataAccessLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("DataAccessLayer.Entities.InExType", b =>
+                {
+                    b.Property<int>("InExTypeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("InExName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("InExTypeID");
+
+                    b.ToTable("InExTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            InExTypeID = 1,
+                            InExName = "Gelir"
+                        },
+                        new
+                        {
+                            InExTypeID = 2,
+                            InExName = "Gider"
+                        });
+                });
 
             modelBuilder.Entity("DataAccessLayer.Entities.IncomeExpense", b =>
                 {
@@ -30,6 +57,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("ImageBase64")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("InExTypeID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -38,7 +68,20 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("InExTypeID");
+
                     b.ToTable("IncomeExpenses");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Entities.IncomeExpense", b =>
+                {
+                    b.HasOne("DataAccessLayer.Entities.InExType", "InExType")
+                        .WithMany()
+                        .HasForeignKey("InExTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InExType");
                 });
 #pragma warning restore 612, 618
         }
